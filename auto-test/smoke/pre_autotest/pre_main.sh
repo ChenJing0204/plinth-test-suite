@@ -23,6 +23,10 @@ if [ -f /home/plinth/ENV_OK ];then
 	exit 0
 fi
 
+if [ x"${Y_ZONE}" == x"" ]
+then
+    Y_ZONE="false"
+fi
 
 SAS_TOP_DIR=$(cd "`dirname $0`" ; pwd)
 :> /home/dmesg.log

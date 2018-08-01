@@ -61,7 +61,7 @@ checklist()
     echo $tmp >> table
   done < ${TESTER_PERF_TOP_DIR}/data/perf_test_case.table
   sed -i 's/ /|/g'  table
-  mv table ${PLINTH_BASE_WORKSPACE}/user/${T_TESTER}/perf/
+  mv table ${PLINTH_TEST_WORKSPACE}/user/${T_TESTER}/perf/
 
   }
 ###################################################################################
@@ -151,25 +151,25 @@ if [ x"$T_PICK_CASE" = x"true" ];then
     checklist
 fi
 
-if [ -f ${PLINTH_BASE_WORKSPACE}/user/${T_TESTER}/perf/table ];then
-    cp ${PLINTH_BASE_WORKSPACE}/user/${T_TESTER}/perf/table ${TESTER_PERF_TOP_DIR}/data/perf_test_case.table
+if [ -f ${PLINTH_TEST_WORKSPACE}/user/${T_TESTER}/perf/table ];then
+    cp ${PLINTH_TEST_WORKSPACE}/user/${T_TESTER}/perf/table ${TESTER_PERF_TOP_DIR}/data/perf_test_case.table
 else
     echo ">--------------------------------------------------------------------------------<"
     echo -e "\033[31m User is not pick his own test case !use the table default.... \033[0m"
     echo ">--------------------------------------------------------------------------------<"
 fi
 
-if [ ! -d ${PLINTH_BASE_WORKSPACE}/user/${T_TESTER}/perf ];then
-	mkdir -p ${PLINTH_BASE_WORKSPACE}/user/${T_TESTER}/perf
+if [ ! -d ${PLINTH_TEST_WORKSPACE}/user/${T_TESTER}/perf ];then
+	mkdir -p ${PLINTH_TEST_WORKSPACE}/user/${T_TESTER}/perf
 fi
 
-if [ ! -f ${PLINTH_BASE_WORKSPACE}/user/${T_TESTER}/perf/cfg ];then
-	touch ${PLINTH_BASE_WORKSPACE}/user/${T_TESTER}/perf/cfg
+if [ ! -f ${PLINTH_TEST_WORKSPACE}/user/${T_TESTER}/perf/cfg ];then
+	touch ${PLINTH_TEST_WORKSPACE}/user/${T_TESTER}/perf/cfg
 fi
 
 if [ x"${T_CTRL_NIC}" = x"" ];then
 	echo "User not input the cfg of NIC,use user pre-define value!"
-	T_CTRL_NIC=`cat ${PLINTH_BASE_WORKSPACE}/user/${T_TESTER}/perf/cfg | grep "T_CTRL_NIC" | awk -F':' '{print $NF}'`
+	T_CTRL_NIC=`cat ${PLINTH_TEST_WORKSPACE}/user/${T_TESTER}/perf/cfg | grep "T_CTRL_NIC" | awk -F':' '{print $NF}'`
 fi
 
 g_ctrlNIC=$T_CTRL_NIC
@@ -178,11 +178,11 @@ g_ctrlNIC=$T_CTRL_NIC
 ##################################################################################
 #Update the cfg
 ###################################################################################
-echo "PERF cfg save by ${T_TESTER}" > ${PLINTH_BASE_WORKSPACE}/user/${T_TESTER}/perf/cfg
+echo "PERF cfg save by ${T_TESTER}" > ${PLINTH_TEST_WORKSPACE}/user/${T_TESTER}/perf/cfg
 
 
 if [ x"${T_CTRL_NIC}" != x"" ];then
-    echo "T_CTRL_NIC:${T_CTRL_NIC}" >> ${PLINTH_BASE_WORKSPACE}/user/${T_TESTER}/perf/cfg
+    echo "T_CTRL_NIC:${T_CTRL_NIC}" >> ${PLINTH_TEST_WORKSPACE}/user/${T_TESTER}/perf/cfg
 fi
 
 if [ x"${T_CTRL_NIC}" = x"" ];then

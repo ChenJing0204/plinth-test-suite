@@ -23,7 +23,7 @@ function support_max_devices()
         mount -t ext4 ${disk_name} /mnt/${count} 1>/dev/null
 
         info=`mount | grep -w "^${disk_name}"`
-        if [ "${info}" = x"" ]
+        if [ "${info}" = "" ]
         then
             MESSAGE="FAIL\tMount "${disk_name}" disk failure." && echo ${MESSAGE} && return 1
         fi

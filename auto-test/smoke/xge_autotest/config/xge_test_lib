@@ -126,14 +126,14 @@ function init_net_export()
     if [[ `cat ${PLINTH_TEST_WORKSPACE}/xge/cfg/lnic_${G_BOARD_TYPE} | wc -l` -eq 0 ]];then
         tmp_infol="dmesg"
     else
-        tmp_infol="${PLINTH_TEST_WORKSPACE}/xge/cfg/lnic_${G_BOARD_TYPE}"
+        tmp_infol="cat ${PLINTH_TEST_WORKSPACE}/xge/cfg/lnic_${G_BOARD_TYPE}"
         echo "use the dmesg info save by pre_main"
     fi
 
     if [[ `cat ${PLINTH_TEST_WORKSPACE}/xge/cfg/rnic_${G_BOARD_TYPE} | wc -l` -eq 0 ]];then
         tmp_infor="dmesg"
     else
-        tmp_infor="${PLINTH_TEST_WORKSPACE}/xge/cfg/rnic_${G_BOARD_TYPE}"
+        tmp_infor="cat ${PLINTH_TEST_WORKSPACE}/xge/cfg/rnic_${G_BOARD_TYPE}"
     fi
 
     #we update the eth rename info to eth_map,then update TP/FIBRE info
@@ -141,34 +141,33 @@ function init_net_export()
     tmp_fi=0
     for i in ${!eth_map[*]}
     do
-         tmp=`cat ${tmp_infol} | grep -i "renamed from "${i} -w`
-	 if [ x"${tmp}" == x"" ]
-	 then
-		 echo "The name of "${i}" is not renamed,Stay as "${eth_map[${i}]}
-	 else
-	         tmp=`echo ${tmp%:*}`
-	         tmp=`echo ${tmp##* }`
-	         eth_map[${i}]=${tmp}
-	         echo "The name of "${i}" is renamed as "${eth_map[${i}]}
-	 fi
+         tmp=`${tmp_infol} | grep -i "renamed from "${i} -w`
+         if [ x"${tmp}" == x"" ]
+         then
+             echo "The name of "${i}" is not renamed,Stay as "${eth_map[${i}]}
+         else
+                 tmp=`echo ${tmp%:*}`
+                 tmp=`echo ${tmp##* }`
+                 eth_map[${i}]=${tmp}
+                 echo "The name of "${i}" is renamed as "${eth_map[${i}]}
+         fi
 
-    a=$[RANDOM%201]
-    main_eth=$g_ctrlNIC
+        a=$[RANDOM%201]
+        main_eth=$g_ctrlNIC
     # if [ x"${eth_map[${main_eth}]}" = x"${eth_map[${i}]}" ]
-    if [ x"${main_eth}" = x"${eth_map[${i}]}" ]
-    then
-        echo "this eth is not change!"
-    else
-        ifconfig ${eth_map[${i}]} "192.168.${a}.209"
-        # ifconfig enp125s0f0 "192.168.${a}.209"
-        echo 'y'
-    fi
+        if [ x"${main_eth}" = x"${eth_map[${i}]}" ]
+        then
+            echo "this eth is not change!"
+        else
+            ifconfig ${eth_map[${i}]} "192.168.${a}.209"
+            # ifconfig enp125s0f0 "192.168.${a}.209"
+            echo 'y'
+        fi
 
 	 #we update the TP/FIBRE info intolocal_tp/fibre_list
          if [ x"${eth_map[${i}]}" = x"${g_ctrlNIC}" ];then
              continue
          fi
-
 
          ethtool ${eth_map[${i}]} | grep "TP"
          if [ $? = 0 ];then
@@ -295,10 +294,9 @@ function init_net_export()
     for i in ${!eth_map_r[*]}
     do
         if [ x"$tmp_infor" = x"dmesg" ];then
-             tmp=`ssh -o StrictHostKeyChecking=no root@${BACK_IP} 'cat ${tmp_infor} | grep -i "renamed from '${i}'" -w'`
+            tmp=`ssh -o StrictHostKeyChecking=no root@${BACK_IP} '${tmp_infor} | grep -i "renamed from '${i}'" -w'`
         else
-            echo "fuck you"
-            tmp=`cat ${tmp_infor} | grep -i "renamed from "${i} -w`
+            tmp=`${tmp_infor} | grep -i "renamed from "${i} -w`
            # tmp=`cat ${tmp_infor} | grep -i 'renamed from ${i}'`
         fi
      if [ x"${tmp}" = x"" ]
